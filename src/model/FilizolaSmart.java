@@ -43,7 +43,7 @@ public class FilizolaSmart extends Produto implements IBalanca
         char primeiroDigito = Character.toUpperCase(tipo.charAt(0));
 
         if (primeiroDigito != 'U' && primeiroDigito != 'P')
-            System.out.println("Tipo não é válido! (Apenas U ou P");
+            System.out.println("Tipo não é válido! (Apenas U ou P)");
         else
             super.setTipo(Character.toString(primeiroDigito));
     }
