@@ -1,7 +1,6 @@
 package model;
 
 import java.io.*;
-import java.math.BigInteger;
 import java.util.List;
 
 public class UranoIntegra extends Produto implements IBalanca
@@ -32,7 +31,10 @@ public class UranoIntegra extends Produto implements IBalanca
         char primeiroDigito = Character.toUpperCase(tipo.charAt(0));
 
         if (primeiroDigito != '0' && primeiroDigito != '6')
-            System.out.println("Tipo não é válido! (Apenas 0 ou 6)");
+        {
+            System.out.println("Não corresponde ao tipo em Urano Integra! (Apenas 0 ou 6).");
+            super.setTipo(null);
+        }
         else
             super.setTipo(Character.toString(primeiroDigito));
     }
@@ -78,11 +80,17 @@ public class UranoIntegra extends Produto implements IBalanca
 
         for (Produto produto:produtos)
         {
-            produtoIdentificador = produto.getCodigo() + "*" + produto.getTipo() + produto.getDescricao()
-            + produto.getValor() + "00000" + "D";
+            setCodigo(Integer.parseInt(produto.getCodigo()));
+            setDescricao(produto.getDescricao());
+            setTipo(produto.getTipo());
+            setValor(Double.parseDouble(produto.getValor()));
 
-            if (reader.readLine() != null) writer.write("\n" + produtoIdentificador);
-            else writer.write(produtoIdentificador);
+            if(getTipo() == null) continue;
+
+            produtoIdentificador = produto.getCodigo() + "*" + produto.getTipo()
+            + produto.getDescricao() + produto.getValor() + "00000" + "D";
+
+            writer.write(produtoIdentificador + "\n");
         }
 
         writer.close();

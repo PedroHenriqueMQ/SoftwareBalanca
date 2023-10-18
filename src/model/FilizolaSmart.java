@@ -43,7 +43,10 @@ public class FilizolaSmart extends Produto implements IBalanca
         char primeiroDigito = Character.toUpperCase(tipo.charAt(0));
 
         if (primeiroDigito != 'U' && primeiroDigito != 'P')
-            System.out.println("Tipo não é válido! (Apenas U ou P)");
+        {
+            System.out.println("Não corresponde ao tipo em Filizola Smart! (Apenas U ou P).");
+            super.setTipo(null);
+        }
         else
             super.setTipo(Character.toString(primeiroDigito));
     }
@@ -78,12 +81,16 @@ public class FilizolaSmart extends Produto implements IBalanca
 
         for (Produto produto:produtos)
         {
-            produtoIdentificador =
-                    produto.getCodigo() + produto.getTipo() +
-                            produto.getDescricao() + produto.getValor() + "000";
+            setCodigo(Integer.parseInt(produto.getCodigo()));
+            setDescricao(produto.getDescricao());
+            setTipo(produto.getTipo());
+            setValor(Double.parseDouble(produto.getValor()));
 
-            if (reader.readLine() != null) writer.write("\n" + produtoIdentificador);
-            else writer.write(produtoIdentificador);
+            if(getTipo() == null) continue;
+
+            produtoIdentificador = getCodigo() + getTipo() + getDescricao() + getValor() + "000";
+
+            writer.write(produtoIdentificador + "\n");
         }
 
         writer.close();

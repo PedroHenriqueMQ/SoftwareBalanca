@@ -47,7 +47,10 @@ public class ToledoMGV6 extends Produto implements IBalanca
             Character.getNumericValue(primeiroDigito) <= 5))
             super.setTipo(Character.toString(primeiroDigito));
         else
-            System.out.println("Tipo não é válido! (Apenas números entre 0 e 5)");
+        {
+            System.out.println("Não corresponde ao tipo em Toledo MGV6! (Apenas números entre 0 e 5).");
+            super.setTipo(null);
+        }
     }
 
     @Override
@@ -80,14 +83,20 @@ public class ToledoMGV6 extends Produto implements IBalanca
 
         for (Produto produto:produtos)
         {
-            produtoIdentificador = "01" + produto.getTipo() + produto.getCodigo() + produto.getValor()
-            + "000" + produto.getDescricao() + "\n000000" + "0000" + "000000" + "0" + "0" + "0000"
-            + "000000000000" + "00000000000" + "0" + "0000" + "0000" + "0000" + "0000" + "0000"
-            + "\n0000" + "000000000000" + "000000" + "|01|" + "                                   " +
-            "                                   "+"\n000000" + "000000" + "000000" + "0000000|0000|0||";
+            setCodigo(Integer.parseInt(produto.getCodigo()));
+            setDescricao(produto.getDescricao());
+            setTipo(produto.getTipo());
+            setValor(Double.parseDouble(produto.getValor()));
 
-            if (reader.readLine() != null) writer.write("\n" + produtoIdentificador);
-            else writer.write(produtoIdentificador);
+            if(getTipo() == null) continue;
+
+            produtoIdentificador = "01" + getTipo() + getCodigo() + getValor() + "000" + getDescricao()
+            + "\n000000" + "0000" + "000000" + "0" + "0" + "0000" + "000000000000" + "00000000000"
+            + "0" + "0000" + "0000" + "0000" + "0000" + "0000" + "\n0000" + "000000000000" + "000000"
+            + "|01|" + "                                   " + "                                   "
+            +"\n000000" + "000000" + "000000" + "0000000|0000|0||";
+
+            writer.write(produtoIdentificador + "\n");
         }
 
         writer.close();
