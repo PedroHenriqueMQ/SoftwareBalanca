@@ -1,15 +1,11 @@
 package model;
 
+import javax.naming.SizeLimitExceededException;
 import java.io.IOException;
 import java.util.List;
 
 public class BalancaFactory
 {
-       //filizolaSmart.exportar(filizolaSmartList, "src/main/resources/CADTXT.TXT");
-       //toledoMGV6.exportar(toledoMGV6List, "src/main/resources/ITENSMGV.TXT");
-       //uranoIntegra.exportar(uranoIntegraList, "src/main/resources/PRODUTOS.TXT");
-
-
     public enum TipoBalanca {FINIZOLA_SMART, TOLEDO_MGV6, URANO_INTEGRA}
 
     public IBalanca getBalanca (TipoBalanca tipo)
@@ -17,7 +13,7 @@ public class BalancaFactory
         return new IBalanca()
         {
             @Override
-            public void exportar(List<Produto> produtos, String pastaArquivoTxt) throws IOException
+            public void exportar(List<Produto> produtos, String pastaArquivoTxt) throws IOException, SizeLimitExceededException
             {
                 switch (tipo.name())
                 {

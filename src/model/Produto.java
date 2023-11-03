@@ -1,5 +1,7 @@
 package model;
 
+import javax.naming.SizeLimitExceededException;
+
 public class Produto
 {
     private int codigo;
@@ -12,7 +14,7 @@ public class Produto
         return String.valueOf(codigo);
     }
 
-    public void setCodigo(int codigo)
+    public void setCodigo(int codigo) throws SizeLimitExceededException
     {
         this.codigo = codigo;
     }
@@ -22,8 +24,7 @@ public class Produto
         return descricao;
     }
 
-    public void setDescricao(String descricao)
-    {
+    public void setDescricao(String descricao) throws SizeLimitExceededException {
         this.descricao = descricao.toUpperCase();
     }
 
@@ -42,8 +43,7 @@ public class Produto
         return Double.toString(valor);
     }
 
-    public void setValor(double valor)
-    {
+    public void setValor(double valor) throws SizeLimitExceededException {
         this.valor = valor;
     }
 }

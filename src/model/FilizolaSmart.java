@@ -1,5 +1,6 @@
 package model;
 
+import javax.naming.SizeLimitExceededException;
 import java.io.*;
 import java.util.List;
 
@@ -17,19 +18,18 @@ public class FilizolaSmart extends Produto implements IBalanca
     }
 
     @Override
-    public void setCodigo(int codigo)
+    public void setCodigo(int codigo) throws SizeLimitExceededException
     {
         if (String.valueOf(codigo).length() > 6)
-            codigo = Integer.parseInt(String.valueOf(codigo).substring(0, 6));
+            throw new SizeLimitExceededException("Código passou do tamanho limite em Filizola Smart! (Máx. 6).");
 
         super.setCodigo(codigo);
     }
 
     @Override
-    public void setDescricao(String descricao)
-    {
+    public void setDescricao(String descricao) throws SizeLimitExceededException {
         if (descricao.length() > 22)
-            descricao = descricao.substring(0, 22);
+            throw new SizeLimitExceededException("Descrição passou do tamanho limite em Filizola Smart! (Máx. 22).");
 
         while (descricao.length() < 22)
             descricao += " ";
@@ -44,8 +44,7 @@ public class FilizolaSmart extends Produto implements IBalanca
 
         if (primeiroDigito != 'U' && primeiroDigito != 'P')
         {
-            System.out.println("Não corresponde ao tipo em Filizola Smart! (Apenas U ou P).");
-            super.setTipo(null);
+            throw new IllegalArgumentException("Não corresponde ao tipo em Filizola Smart! (Apenas U ou P).");
         }
         else
             super.setTipo(Character.toString(primeiroDigito));
@@ -54,25 +53,29 @@ public class FilizolaSmart extends Produto implements IBalanca
     @Override
     public String getValor()
     {
-        String valorString = String.valueOf(super.getValor()).substring
-                (0, super.getValor().indexOf(".") + 3).replace(".", "");
+        StringBuilder valorString = new StringBuilder(super.getValor());
 
-        if (valorString.length() > 7)
-        {
-            valorString = valorString.substring(valorString.length() - 7);
-            super.setValor(Double.parseDouble(valorString.substring(0, valorString.length() -2)
-            + "." + valorString.substring(valorString.length() -2)));
-        }
+        if (valorString.substring(valorString.indexOf(".")+1).length() < 2) valorString.append("0");
 
-        while (valorString.length() < 7)
-            valorString = "0" + valorString;
+        while (valorString.length()-1 < 7) valorString.insert(0, "0");
 
-        return valorString;
+        return valorString.toString().replace(".","");
     }
 
     @Override
-    public void exportar(List<Produto> produtos, String pastaArquivoTxt) throws IOException
+    public void setValor(double valor) throws SizeLimitExceededException
     {
+        if (Double.toString(valor).substring(0, Double.toString(valor).indexOf(".")).length() > 5)
+            throw new SizeLimitExceededException("Valor passou do tamanho limite em Filizola Smart! (Máx. 7).");
+        else if (Double.toString(valor).substring(Double.toString(valor).indexOf(".")+1).length() > 2)
+            throw new NumberFormatException
+                    ("Valor passou do tamanho limite de casas decimais em Filizola Smart! (Máx. 2).");
+
+        super.setValor(valor);
+    }
+
+    @Override
+    public void exportar(List<Produto> produtos, String pastaArquivoTxt) throws IOException, SizeLimitExceededException {
         File arquivo = new File(pastaArquivoTxt);
         FileWriter writer = new FileWriter(arquivo,true);
         BufferedReader reader = new BufferedReader(new FileReader(arquivo));
